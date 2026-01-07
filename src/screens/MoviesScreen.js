@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, TextInput, FlatList, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useStore } from '../store/useStore';
 import MediaCard from '../components/MediaCard';
-
-const API_KEY = '54b3c5b386030268e11e866ea34e27fb'; 
+import { globalStyles as styles } from '../styles/globalStyles'; // Импорт общих стилей
+import { Ionicons } from '@expo/vector-icons'; // Иконки
 
 export default function MoviesScreen() {
   const [tab, setTab] = useState('search');
@@ -12,6 +12,8 @@ export default function MoviesScreen() {
   const [loading, setLoading] = useState(false);
 
   const { myMovies, toggleItem } = useStore();
+
+  const API_KEY = "54b3c5b386030268e11e866ea34e27fb";
 
   const searchMovies = async (text) => {
     setQuery(text);
@@ -24,7 +26,7 @@ export default function MoviesScreen() {
         const data = await response.json();
         setSearchResults(data.results || []);
       } catch (error) {
-        console.error("Ошибка поиска:", error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -33,40 +35,46 @@ export default function MoviesScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Переключатель Поиск / Мои */}
+      {/* Переключатель табов */}
       <View style={styles.tabContainer}>
-        {['search', 'myList'].map((t) => (
-          <TouchableOpacity 
-            key={t}
-            style={[styles.tab, tab === t && styles.activeTab]} 
-            onPress={() => setTab(t)}
-          >
-            <Text style={tab === t ? styles.activeTabText : styles.tabText}>
-              {t === 'search' ? 'Поиск' : `Мои (${myMovies.length})`}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        <TouchableOpacity 
+          style={[styles.tab, tab === 'search' && styles.activeTab]} 
+          onPress={() => setTab('search')}
+        >
+          <Ionicons name="search" size={18} color={tab === 'search' ? '#6200ee' : '#6c757d'} />
+          <Text style={tab === 'search' ? styles.activeTabText : styles.tabText}> Поиск</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.tab, tab === 'myList' && styles.activeTab]} 
+          onPress={() => setTab('myList')}
+        >
+          <Ionicons name="film" size={18} color={tab === 'myList' ? '#6200ee' : '#6c757d'} />
+          <Text style={tab === 'myList' ? styles.activeTabText : styles.tabText}> Мои ({myMovies?.length || 0})</Text>
+        </TouchableOpacity>
       </View>
 
       {tab === 'search' ? (
         <>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Название фильма..."
-            value={query}
-            onChangeText={searchMovies}
-          />
+          <View style={styles.searchSection}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Найти фильм..."
+              value={query}
+              onChangeText={searchMovies}
+            />
+          </View>
           {loading ? (
             <ActivityIndicator size="large" color="#6200ee" style={{ marginTop: 20 }} />
           ) : (
             <FlatList 
               data={searchResults} 
-              keyExtractor={(item) => `search-${item.id}`} 
+              keyExtractor={(item) => item.id.toString()} 
               renderItem={({ item }) => (
                 <MediaCard 
                   item={item} 
                   type="movie"
-                  isSaved={myMovies.some(m => m.id === item.id)}
+                  isSaved={myMovies?.some(m => m.id === item.id)}
                   onToggle={() => toggleItem(item, 'movie')}
                 />
               )}
@@ -76,14 +84,9 @@ export default function MoviesScreen() {
       ) : (
         <FlatList 
           data={myMovies} 
-          keyExtractor={(item) => `my-${item.id}`} 
+          keyExtractor={(item) => item.id.toString()} 
           renderItem={({ item }) => (
-            <MediaCard 
-              item={item} 
-              type="movie"
-              isSaved={true}
-              onToggle={() => toggleItem(item, 'movie')}
-            />
+            <MediaCard item={item} type="movie" isSaved={true} onToggle={() => toggleItem(item, 'movie')} />
           )}
           ListEmptyComponent={<Text style={styles.emptyText}>Вы еще ничего не добавили</Text>}
         />
@@ -91,14 +94,3 @@ export default function MoviesScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 15, backgroundColor: '#f5f5f5' },
-  tabContainer: { flexDirection: 'row', marginBottom: 20, backgroundColor: '#eee', borderRadius: 12, padding: 4 },
-  tab: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 10 },
-  activeTab: { backgroundColor: '#fff', elevation: 3 },
-  tabText: { color: '#888', fontWeight: '500' },
-  activeTabText: { color: '#6200ee', fontWeight: 'bold' },
-  searchInput: { backgroundColor: '#fff', padding: 12, borderRadius: 12, marginBottom: 15, borderWidth: 1, borderColor: '#ddd' },
-  emptyText: { textAlign: 'center', color: '#aaa', marginTop: 40 }
-});
