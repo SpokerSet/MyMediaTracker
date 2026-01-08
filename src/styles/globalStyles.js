@@ -31,6 +31,8 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     alignItems: 'center',
+    justifyContent: 'center', 
+    flexDirection: 'row',     
     borderRadius: 10,
   },
   activeTab: {
