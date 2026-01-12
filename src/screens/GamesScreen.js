@@ -83,14 +83,3 @@ export default function GamesScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 15, backgroundColor: '#f5f5f5' },
-  tabContainer: { flexDirection: 'row', marginBottom: 20, backgroundColor: '#eee', borderRadius: 12, padding: 4 },
-  tab: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 10 },
-  activeTab: { backgroundColor: '#fff', elevation: 3 },
-  tabText: { color: '#888', fontWeight: '500' },
-  activeTabText: { color: '#6200ee', fontWeight: 'bold' },
-  searchInput: { backgroundColor: '#fff', padding: 12, borderRadius: 12, marginBottom: 15, borderWidth: 1, borderColor: '#ddd' },
-  emptyText: { textAlign: 'center', color: '#aaa', marginTop: 40 }
-});
