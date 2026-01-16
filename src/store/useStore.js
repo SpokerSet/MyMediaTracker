@@ -20,10 +20,6 @@ export const useStore = create(
         };
       }),
     }),
-    {
-      name: 'media-tracker-storage',
-      // Для веба в React Native лучше явно указать storage
-      storage: createJSONStorage(() => localStorage), 
-    }
+    
   )
 );
