@@ -7,19 +7,34 @@ export const useStore = create(
       myMovies: [],
       myBooks: [],
       myGames: [],
+
+      
       toggleItem: (item, category) => set((state) => {
-        const listName = 
-          category === 'movie' ? 'myMovies' : 
-          category === 'book' ? 'myBooks' : 'myGames';
-        const currentList = state[listName] || [];
-        const isExist = currentList.some(i => i.id === item.id);
+        const listMap = {
+          movie: 'myMovies',
+          book: 'myBooks',
+          game: 'myGames'
+        };
+        const listName = listMap[category];
+        
+        if (!listName) return state;
+
+        const currentList = state[listName];
+        const exists = currentList.some(i => i.id === item.id);
+
         return {
-          [listName]: isExist 
+          [listName]: exists 
             ? currentList.filter(i => i.id !== item.id) 
             : [...currentList, item]
         };
       }),
+
+      
+      clearCategory: (category) => set({ [`my${category.charAt(0).toUpperCase() + category.slice(1)}s`]: [] })
     }),
-    
+    {
+      name: 'media-tracker-v1',
+      storage: createJSONStorage(() => localStorage),
+    }
   )
 );

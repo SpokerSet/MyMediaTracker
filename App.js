@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
+// App.js
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import AppNavigator from './navigation/AppNavigator';
-import { useStore } from './store/useStore';
+import AppNavigator from './src/navigation/AppNavigator'; 
+import { useStore } from './src/store/useStore';
 
 export default function App() {
-  const [rehydrated, setRehydrated] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    // Ждем, пока Zustand подгрузит данные из памяти
-    const hydrate = async () => {
+    const initStore = async () => {
       await useStore.persist.rehydrate();
-      setRehydrated(true);
+      setIsHydrated(true);
     };
-    hydrate();
+    initStore();
   }, []);
 
-  if (!rehydrated) {
-    return null; 
+  if (!isHydrated) {
+    return null;
   }
 
   return (
