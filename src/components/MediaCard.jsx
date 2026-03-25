@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { cardStyles as styles } from '../styles/cardStyles'; // Импорт стилей
 
 export default function MediaCard({ item, type, isSaved, onToggle }) {
   const title = item.title || item.volumeInfo?.title || item.name;

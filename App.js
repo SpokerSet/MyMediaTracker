@@ -1,7 +1,6 @@
 // App.js
-import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import AppNavigator from './src/navigation/AppNavigator'; 
+import AppNavigator from './src/navigation/AppNavigator'; // Убрали /src/
 import { useStore } from './src/store/useStore';
 
 export default function App() {
