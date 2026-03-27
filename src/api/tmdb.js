@@ -3,24 +3,15 @@ import axios from 'axios';
 const API_KEY = '54b3c5b386030268e11e866ea34e27fb'; 
 const BASE_URL = 'https://api.themoviedb.org/3';
 
-const tmdb = axios.create({
-  baseURL: BASE_URL,
-  params: {
-    api_key: API_KEY,
-    language: 'ru-RU', // Сразу ставим русский язык
-  },
-});
-
 export const searchMovies = async (query) => {
+  if (!query) return [];
   try {
-    const response = await tmdb.get('/search/movie', {
-      params: { query },
+    const response = await axios.get(`${BASE_URL}/search/movie`, {
+      params: { api_key: API_KEY, query, language: 'ru-RU' },
     });
-    return response.data.results; // Возвращает массив сырых данных
+    return response.data.results;
   } catch (error) {
-    console.error("Ошибка при поиске фильмов:", error);
+    console.error("API Error", error);
     return [];
   }
 };
-
-export default tmdb;

@@ -1,26 +1,19 @@
-// App.js
-import { NavigationContainer } from '@react-navigation/native';
-import AppNavigator from './src/navigation/AppNavigator'; // Убрали /src/
+import React, { useState, useEffect } from 'react';
+import HomeScreen from './src/screens/HomeScreen';
 import { useStore } from './src/store/useStore';
 
 export default function App() {
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const initStore = async () => {
+    const hydrate = async () => {
       await useStore.persist.rehydrate();
-      setIsHydrated(true);
+      setIsReady(true);
     };
-    initStore();
+    hydrate();
   }, []);
 
-  if (!isHydrated) {
-    return null;
-  }
+  if (!isReady) return null;
 
-  return (
-    <NavigationContainer>
-      <AppNavigator />
-    </NavigationContainer>
-  );
+  return <HomeScreen />;
 }

@@ -6,31 +6,18 @@ export const useStore = create(
   persist(
     (set) => ({
       myMovies: [],
-      myBooks: [],
-      myGames: [],
-
-      toggleItem: (item, category) => set((state) => {
-        const listMap = {
-          movie: 'myMovies',
-          book: 'myBooks',
-          game: 'myGames'
-        };
-        const listName = listMap[category];
-        if (!listName) return state;
-
-        const currentList = state[listName] || [];
-        const isExist = currentList.some(i => i.id === item.id);
-
+      toggleMovie: (movie) => set((state) => {
+        const exists = state.myMovies.some((m) => m.id === movie.id);
         return {
-          [listName]: isExist 
-            ? currentList.filter(i => i.id !== item.id) 
-            : [...currentList, { ...item, type: category }]
+          myMovies: exists
+            ? state.myMovies.filter((m) => m.id !== movie.id)
+            : [...state.myMovies, movie],
         };
       }),
     }),
     {
-      name: 'media-storage',
-      storage: createJSONStorage(() => AsyncStorage), // Используем AsyncStorage для Arch/Mobile
+      name: 'movies-storage',
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );
